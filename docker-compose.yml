@@ -1,0 +1,65 @@
+version: '3.1'
+
+networks:
+  project:
+
+services:
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+    ports:
+      - "${db_port}:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./config/postgres/initdb.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - project
+    restart: always
+
+  pgadmin:
+      image: dpage/pgadmin4
+      environment:
+        PGADMIN_DEFAULT_EMAIL: "pgadmin4@pgadmin.org"
+        PGADMIN_DEFAULT_PASSWORD: "admin"
+        PGADMIN_CONFIG_SERVER_MODE: "False"
+      volumes:
+        - ./data/pgadmin:/var/lib/pgadmin
+      ports:
+        - "${pgadmin_port}:80"
+      networks:
+        - project
+      restart: always
+  
+  grafana:
+    image: grafana/grafana:7.5.7
+    ports:
+      - "${grafana_port}:3000"
+    restart: always
+    networks:
+      - project
+    volumes:
+      - ./config/grafana/:/etc/grafana/provisioning/datasources
+      - ./data/grafana:/var/lib/grafana
+
+  backend:
+    image: manufacturing-back:v1.0.0
+    environment:
+      flask_host: 'backend'
+      flask_port: 5435
+      db_port: ${db_port}
+      tg_token: ${tg_token}
+      tg_chat: ${tg_chat}
+      opc_server: ${opc_server}
+    volumes:
+      - ./code/python:/code
+    networks:
+      - project
+    restart: always
+    ports:
+      - ${back_port}:5435
+      

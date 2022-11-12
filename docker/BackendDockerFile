@@ -1,0 +1,4 @@
+FROM python3.11:v1.0.0
+
+WORKDIR /code
+ENTRYPOINT python3 main.py

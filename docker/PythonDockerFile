@@ -1,0 +1,29 @@
+FROM python:3.11-slim
+USER root
+
+RUN apt-get update
+
+RUN \
+    apt-get install tzdata && \
+    cp /usr/share/zoneinfo/Europe/Moscow /etc/localetime
+
+RUN apt-get install -y \
+    libpq-dev \
+    gcc \
+    build-essential \
+    musl-dev
+
+
+RUN pip3 install --upgrade pip
+
+RUN pip3 install --no-cache-dir \
+    setuptools \
+    numpy \
+    pandas \
+    psycopg2==2.9.4 \
+    flask \
+    openpyxl \
+    xlrd \
+    flask_cors \
+    requests \
+    opcua
