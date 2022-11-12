@@ -6,7 +6,7 @@
 - Telegram API
 - OPC UA
 
-## Qick start: <P>
+## Quick start: <P>
 Set properties in .env file <P>
 Build project <P>
 `./build.sh` <P>
