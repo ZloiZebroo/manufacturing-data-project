@@ -67,7 +67,6 @@ def api_start_collecting_mesurements():
                 logger.warning(notification_text)
                 tg.send_message(tg_chat_id, notification_text)
         sleep(1)
-    mining.start_simulation()
     return 'Mesurements collected'
 
 
