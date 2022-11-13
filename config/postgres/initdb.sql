@@ -1,9 +1,3 @@
-CREATE TABLE test (
-    a int,
-    b varchar,
-    c date
-);
-
 CREATE TABLE devices (
     device_name varchar,
     device_id varchar,
