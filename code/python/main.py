@@ -54,11 +54,13 @@ def api_start_collecting_devices():
     return 'Devices collected'
 
 
-@app.route('/start-collecting-mesurements', methods=['GET'])
-def api_start_collecting_mesurements():
+@app.route('/start-collecting-measurements', methods=['GET'])
+def api_start_collecting_measurements():
+    query = 'SELECT DISTINCT value_id FROM devices'
     found_nodes_with_error = []
+    devices_list = db.query_to_df(query, login=db_login)['value_id'].unique()
     for _ in range(collect_samples):
-        df = mining.get_mesurements_data()
+        df = mining.get_maesurements_data(devices_list)
         nodes_with_error = df[df['status'] != 'Good']['value_id'].unique()
         for node in nodes_with_error:
             if node not in found_nodes_with_error:
@@ -67,7 +69,7 @@ def api_start_collecting_mesurements():
                 logger.warning(notification_text)
                 tg.send_message(tg_chat_id, notification_text)
         sleep(1)
-    return 'Mesurements collected'
+    return 'Measurements collected'
 
 
 def main():

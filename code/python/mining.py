@@ -44,7 +44,7 @@ def start_simulation() -> None:
     client.disconnect()
 
 
-def recieve_mesurement_data(devices_list: List[str]) -> DataFrame:
+def recieve_measurement_data(devices_list: List[str]) -> DataFrame:
     client.connect()
     result = list()
     timestamp = datetime.now()
@@ -127,10 +127,9 @@ def parse_devices_data(boilers: List[dict]) -> DataFrame:
     return df.drop_duplicates()
 
 
-def get_mesurements_data() -> DataFrame:
+def get_maesurements_data(devices_list: List[str]) -> DataFrame:
     logger.warning('Start getting devices data')
-    devices_list = db.query_to_df('select distinct value_id from devices', login=db_login)['value_id'].unique()
-    mesurements_df = recieve_mesurement_data(devices_list)
+    mesurements_df = recieve_measurement_data(devices_list)
     db.insert_table(mesurements_df, 'measurements', login=db_login)
     logger.warning('Done getting devices data')
     return mesurements_df 
@@ -153,5 +152,5 @@ def get_notification_data(node: str) -> str:
         component = row.get('component_name')
         node_name = row.get('value_name')
         return f"""<b>{device}</b>
-        {detail} -> {component} -> {node_name} ❌
+{detail} -> {component} -> {node_name} ❌
         """
