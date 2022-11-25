@@ -7,6 +7,12 @@ from pandas import DataFrame
 from typing import List, Callable
 import db as db
 import logging
+import requests
+import json
+import re
+import numpy as np
+import notification as tg
+from time import sleep
 
 logging.basicConfig(
     format='%(asctime)s %(message)s',
@@ -15,6 +21,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 client = Client(os.environ['opc_server'])
 db_port = os.environ['db_port']
+cnc_url = os.environ['cnc_api_url']
+milling_url = os.environ['milling_api_url']
+tg_chat_id = os.environ['tg_chat']
 db_login = {
     'dbname': 'postgres',
     'user': 'postgres',
@@ -154,3 +163,88 @@ def get_notification_data(node: str) -> str:
         return f"""<b>{device}</b>
 {detail} -> {component} -> {node_name} ❌
         """
+
+
+def param_val_to_float(val: str) -> float:
+    val = str(val)
+    result = re.sub('[^\d,-\.]', '', val).replace(',', '.')
+    try:
+        return float(result)
+    except Exception as e:
+        return None
+
+def read_cnc_api_data(api_data: dict) -> pd.DataFrame:
+    result = list()
+    timestamp = datetime.now()
+    for item in api_data.get('data', []):
+        if len(item) > 1:
+            entity = item[0]
+            param_list = item[1]
+            print(entity)
+            for param in param_list:
+                if len(param) > 1:
+                    param_name = param[0]
+                    param_val = param[1]
+                    result.append({
+                        'entity': entity,
+                        'param_name': param_name,
+                        'param_val_str': param_val,
+                        'param_val_float': param_val_to_float(param_val),
+                        'timestamp': timestamp
+                    })
+    return pd.DataFrame(result)
+
+def get_cnc_data() -> pd.DataFrame:
+
+    r = requests.get(cnc_url)
+    json_data = json.loads(r.content)
+    df = read_cnc_api_data(json_data)
+    db.insert_table(df, 'cnc_machine_data', login=db_login)
+    return df
+
+def get_api_data(url: str, table: str) -> pd.DataFrame:
+    r = requests.get(url)
+    json_data = json.loads(r.content)
+    df = read_cnc_api_data(json_data)
+    db.insert_table(df, table, login=db_login)
+    return df
+
+def mine_cnc_data():
+    sent = False
+    machine = 'CNC machine'
+    while True:
+        sleep(10)
+        try:
+            df = get_api_data(cnc_url, 'cnc_machine_data')
+            row = df[df['param_name'] == 'Статус канала'].iloc[0]
+            status = row.get('param_val_str')
+            if not sent and status != 'Работа':
+                entity = row.get('entity')
+                param = row.get('param_name')
+                sent = True
+                tg.send_message(tg_chat_id, f"""<b>{machine}</b>
+{entity} -> {param} -> {status} ❌""")
+        except Exception as e:
+            logger.warning(f'Error: {e}')
+
+
+def mine_miling_data():
+    sent = False
+    machine = 'Milling machine'
+    while True:
+        sleep(10)
+        try:
+            df = get_api_data(milling_url, 'milling_machine_data')
+            row = df[df['param_name'] == 'Статус канала'].iloc[0]
+            status = row.get('param_val_str')
+            if not sent and status != 'Работа':
+                entity = row.get('entity')
+                param = row.get('param_name')
+                sent = True
+                tg.send_message(tg_chat_id, f"""<b>{machine}</b>
+{entity} -> {param} -> {status} ❌""")
+        except Exception as e:
+            logger.warning(f'Error: {e}')
+
+
+    
