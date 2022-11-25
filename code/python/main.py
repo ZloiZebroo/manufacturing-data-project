@@ -10,11 +10,12 @@ from multiprocessing import Process
 processes = {}
 
 db_port = os.environ['db_port']
+db_password = os.environ['db_password']
 
 db_login = {
     'dbname': 'postgres',
     'user': 'postgres',
-    'password': 'postgres',
+    'password': db_password,
     'host': 'db',
     'port': db_port,
     'client_encoding': 'utf-8'

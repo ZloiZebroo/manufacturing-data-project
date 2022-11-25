@@ -24,10 +24,11 @@ db_port = os.environ['db_port']
 cnc_url = os.environ['cnc_api_url']
 milling_url = os.environ['milling_api_url']
 tg_chat_id = os.environ['tg_chat']
+db_password = os.environ['db_password']
 db_login = {
     'dbname': 'postgres',
     'user': 'postgres',
-    'password': 'postgres',
+    'password': db_password,
     'host': 'db',
     'port': db_port,
     'client_encoding': 'utf-8'

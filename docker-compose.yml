@@ -10,7 +10,7 @@ services:
     environment:
       POSTGRES_DB: "postgres"
       POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: ${pg_password}
+      POSTGRES_PASSWORD: "${pg_password}"
     ports:
       - "${db_port}:5432"
     volumes:
@@ -51,6 +51,7 @@ services:
       flask_host: 'backend'
       flask_port: 5435
       db_port: ${db_port}
+      db_password: ${pg_password}
       tg_token: ${tg_token}
       tg_chat: ${tg_chat}
       opc_server: ${opc_server}
