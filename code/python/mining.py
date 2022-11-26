@@ -175,6 +175,7 @@ def param_val_to_float(val: str) -> float:
     except Exception as e:
         return None
 
+
 def read_cnc_api_data(api_data: dict) -> pd.DataFrame:
     result = list()
     timestamp = datetime.now()
@@ -196,13 +197,6 @@ def read_cnc_api_data(api_data: dict) -> pd.DataFrame:
                     })
     return pd.DataFrame(result)
 
-# def get_cnc_data() -> pd.DataFrame:
-
-#     r = requests.get(cnc_url)
-#     json_data = json.loads(r.content)
-#     df = read_cnc_api_data(json_data)
-#     db.insert_table(df, 'cnc_machine_data', login=db_login)
-#     return df
 
 def get_api_data(url: str, table: str) -> pd.DataFrame:
     r = requests.get(url)
@@ -210,43 +204,6 @@ def get_api_data(url: str, table: str) -> pd.DataFrame:
     df = read_cnc_api_data(json_data)
     db.insert_table(df, table, login=db_login)
     return df
-
-# def mine_cnc_data():
-#     sent = False
-#     machine = 'CNC machine'
-#     while True:
-#         sleep(sample_rate)
-#         try:
-#             df = get_api_data(cnc_url, 'cnc_machine_data')
-#             row = df[df['param_name'] == 'Статус канала'].iloc[0]
-#             status = row.get('param_val_str')
-#             if not sent and status != 'Работа':
-#                 entity = row.get('entity')
-#                 param = row.get('param_name')
-#                 sent = True
-#                 tg.send_message(tg_chat_id, f"""<b>{machine}</b>
-# {entity} -> {param} -> {status} ❌""")
-#         except Exception as e:
-#             logger.warning(f'Error: {e}')
-
-
-# def mine_miling_data():
-#     sent = False
-#     machine = 'Milling machine'
-#     while True:
-#         sleep(sample_rate)
-#         try:
-#             df = get_api_data(milling_url, 'milling_machine_data')
-#             row = df[df['param_name'] == 'Статус канала'].iloc[0]
-#             status = row.get('param_val_str')
-#             if not sent and status != 'Работа':
-#                 entity = row.get('entity')
-#                 param = row.get('param_name')
-#                 sent = True
-#                 tg.send_message(tg_chat_id, f"""<b>{machine}</b>
-# {entity} -> {param} -> {status} ❌""")
-#         except Exception as e:
-#             logger.warning(f'Error: {e}')
 
 
 def mine_machine_data(machine: str, url: str, table: str):
@@ -265,6 +222,3 @@ def mine_machine_data(machine: str, url: str, table: str):
 {entity} -> {param} -> {status} ❌""")
         except Exception as e:
             logger.warning(f'Error: {e}')
-
-
-    

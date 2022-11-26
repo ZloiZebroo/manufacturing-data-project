@@ -38,7 +38,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-
 @app.route('/health', methods=['GET'])
 def api_func():
     token = request.args.get('token', '')
@@ -68,6 +67,7 @@ def api_start_simulation():
     else:
         return Response('Wrong token', 401)
 
+
 @app.route('/start-collecting-devices', methods=['GET'])
 def api_start_collecting_devices():
     token = request.args.get('token', '')
@@ -76,6 +76,7 @@ def api_start_collecting_devices():
         return 'Devices collected'
     else:
        return Response('Wrong token', 401)
+
 
 @app.route('/start-collecting-measurements', methods=['GET'])
 def api_start_collecting_measurements():
@@ -98,6 +99,7 @@ def api_start_collecting_measurements():
     else:
         return Response('Wrong token', 401)
 
+
 @app.route('/start-collect-cnc', methods=['GET'])
 def api_start_cnc_collect():
     token = request.args.get('token', '')
@@ -110,6 +112,7 @@ def api_start_cnc_collect():
         return 'CNC collecting started'
     else:
         return Response('Wrong token', 401)
+
 
 @app.route('/stop-collect-cnc', methods=['GET'])
 def api_stop_cnc_collect():
@@ -136,6 +139,7 @@ def api_start_milling_collect():
     else:
         return Response('Wrong token', 401)
 
+
 @app.route('/stop-collect-milling', methods=['GET'])
 def api_stop_milling_collect():
     token = request.args.get('token', '')
@@ -146,6 +150,7 @@ def api_stop_milling_collect():
         return 'milling collecting stoped'
     else:
         return Response('Wrong token', 401)
+
 
 def main():
     app.run(host=host, port=port)

@@ -40,3 +40,5 @@ CREATE INDEX measurements_value_id_idx on measurements using btree(value_id);
 CREATE INDEX devices_value_id_idx on devices using btree(value_id);
 CREATE INDEX cnc_machine_data_timestamp_idx on cnc_machine_data using btree(timestamp);
 CREATE INDEX cnc_machine_data_param_name_idx on cnc_machine_data using btree(param_name);
+CREATE INDEX milling_machine_data_timestamp_idx on milling_machine_data using btree(timestamp);
+CREATE INDEX milling_machine_data_param_name_idx on milling_machine_data using btree(param_name);
