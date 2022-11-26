@@ -10,8 +10,7 @@ services:
     environment:
       POSTGRES_DB: "postgres"
       POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
-      POSTGRES_HOST_AUTH_METHOD: "trust"
+      POSTGRES_PASSWORD: "${pg_password}"
     ports:
       - "${db_port}:5432"
     volumes:
@@ -36,7 +35,7 @@ services:
       restart: always
   
   grafana:
-    image: grafana/grafana:7.5.7
+    image: grafana/grafana:9.2.6
     ports:
       - "${grafana_port}:3000"
     restart: always
@@ -52,9 +51,15 @@ services:
       flask_host: 'backend'
       flask_port: 5435
       db_port: ${db_port}
+      db_password: ${pg_password}
       tg_token: ${tg_token}
       tg_chat: ${tg_chat}
       opc_server: ${opc_server}
+      token: ${token}
+      cnc_api_url: ${cnc_api_url}
+      milling_api_url: ${milling_api_url}
+      sample_rate: ${sample_rate}
+      opc_ua_samples: ${opc_ua_samples}
     volumes:
       - ./code/python:/code
     networks:

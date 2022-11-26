@@ -1,7 +1,7 @@
 # Manufacturing data collection and analysis project 
 ## Technologies:
 - Postgres 15
-- Grafana 7.5.7
+- Grafana 9.2.6
 - Python 3.11
 - Flask
 - Telegram API
@@ -20,6 +20,7 @@ View logs <P>
 
 
 ## Flask API
+### add `?token=yourtoken` into your reqsuests to auth
 
 ### GET /health
 Health check
@@ -40,7 +41,31 @@ Collect devices data into DB
         Devices collected
 
 ### GET /start-collecting-mesurements
-Collect measurements data into DB (300 samples)
+Collect measurements data into DB (N samples)
 + Response 200 (text/plain)
 
         Measurements collected
+
+### GET /start-collect-cnc
+Start collect cnc measurements data into DB
++ Response 200 (text/plain)
+
+        CNC collecting started
+
+### GET /stop-collect-cnc
+Stop collect cnc measurements data into DB
++ Response 200 (text/plain)
+
+        CNC collecting stoped
+
+### GET /start-collect-milling
+Start collect milling measurements data into DB
++ Response 200 (text/plain)
+
+        milling collecting started
+
+### GET /stop-collect-milling
+Stop collect milling measurements data into DB
++ Response 200 (text/plain)
+
+        milling collecting stoped
