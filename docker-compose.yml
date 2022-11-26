@@ -58,6 +58,8 @@ services:
       token: ${token}
       cnc_api_url: ${cnc_api_url}
       milling_api_url: ${milling_api_url}
+      sample_rate: ${sample_rate}
+      opc_ua_samples: ${opc_ua_samples}
     volumes:
       - ./code/python:/code
     networks:

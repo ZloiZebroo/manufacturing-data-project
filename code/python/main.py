@@ -28,7 +28,7 @@ tg_chat_id = os.environ['tg_chat']
 flask_token = os.environ['token']
 cnc_url = os.environ['cnc_api_url']
 milling_url = os.environ['milling_api_url']
-collect_samples = 500
+collect_samples = int(os.environ['opc_ua_samples'])
 
 logging.basicConfig(
     format='%(asctime)s %(message)s',
