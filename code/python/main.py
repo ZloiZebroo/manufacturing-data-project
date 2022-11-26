@@ -26,6 +26,8 @@ host = os.environ['flask_host']
 port = os.environ['flask_port']
 tg_chat_id = os.environ['tg_chat']
 flask_token = os.environ['token']
+cnc_url = os.environ['cnc_api_url']
+milling_url = os.environ['milling_api_url']
 collect_samples = 500
 
 logging.basicConfig(
@@ -101,7 +103,8 @@ def api_start_cnc_collect():
     token = request.args.get('token', '')
     proc_name = 'cnc'
     if token == flask_token and proc_name not in processes:
-        process = Process(target=mining.mine_cnc_data, daemon=True, name=proc_name)
+        miner = lambda: mining.mine_machine_data('CNC machine', cnc_url, 'cnc_machine_data')
+        process = Process(target=miner, daemon=True, name=proc_name)
         process.start()
         processes[proc_name] = process
         return 'CNC collecting started'
@@ -125,7 +128,8 @@ def api_start_milling_collect():
     token = request.args.get('token', '')
     proc_name = 'milling'
     if token == flask_token and proc_name not in processes:
-        process = Process(target=mining.mine_miling_data, daemon=True, name=proc_name)
+        miner = lambda: mining.mine_machine_data('Milling machine', milling_url, 'milling_machine_data')
+        process = Process(target=miner, daemon=True, name=proc_name)
         process.start()
         processes[proc_name] = process
         return 'milling collecting started'
