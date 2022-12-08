@@ -214,11 +214,12 @@ def mine_machine_data(machine: str, url: str, table: str):
             df = get_api_data(url, table)
             row = df[df['param_name'] == 'Статус канала'].iloc[0]
             status = row.get('param_val_str')
-            if not sent and status != 'Работа':
+            if not sent and status == 'Ошибка':
                 entity = row.get('entity')
                 param = row.get('param_name')
                 sent = True
                 tg.send_message(tg_chat_id, f"""<b>{machine}</b>
 {entity} -> {param} -> {status} ❌""")
+            sent = status == 'Ошибка'
         except Exception as e:
             logger.warning(f'Error: {e}')
